@@ -39,15 +39,17 @@ function callbackHandler  (req, res){
   const transactionDate = callbackMetadata.find(item => item.Name === "TransactionDate").Value;
   const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
 
- 
+  var json = JSON.stringify(req.body);
+
+  console.log(json)
  
 
-  console.log(`CheckoutRequestID: ${CheckoutRequestID}`);
-  console.log(`ResultCode: ${ResultCode}`);
-  console.log(`Amount: ${amount}`);
-  console.log(`Receipt: ${receipt}`);
-  console.log(`TransactionDate: ${transactionDate}`);
-  console.log(`PhoneNumber: ${phoneNumber}`);
+//   console.log(`CheckoutRequestID: ${CheckoutRequestID}`);
+//   console.log(`ResultCode: ${ResultCode}`);
+//   console.log(`Amount: ${amount}`);
+//   console.log(`Receipt: ${receipt}`);
+//   console.log(`TransactionDate: ${transactionDate}`);
+//   console.log(`PhoneNumber: ${phoneNumber}`);
 };
 
  function accessTokenHandler  (req, res){
