@@ -1,5 +1,6 @@
 import axios  from "axios";
 import fs from "fs";
+import moment from 'moment';
 
 
 async function getAccessToken() {
@@ -34,14 +35,14 @@ function callbackHandler  (req, res){
   
   var json = JSON.stringify(req.body);
   
-  fs.writeFile("stkcallback.json", json, "utf8", function (err) {
-    if (err) {
-      return console.log(err);
-    }
-    console.log("STK PUSH CALLBACK JSON FILE SAVED");
-  });
+//   fs.writeFile("stkcallback.json", json, "utf8", function (err) {
+//     if (err) {
+//       return console.log(err);
+//     }
+//     console.log("STK PUSH CALLBACK JSON FILE SAVED");
+//   });
   
-  console.log(req.body);
+  console.log(json);
 };
 
  function accessTokenHandler  (req, res){
@@ -53,5 +54,48 @@ function callbackHandler  (req, res){
   };
 
 
-export{getAccessToken, callbackHandler, accessTokenHandler}
+function  stkPushHandler  (req, res){
+    getAccessToken()
+      .then((accessToken) => {
+        const url = process.env.SANDBOX_REQUEST_URL;
+        const auth = 'Bearer ' + accessToken;
+        const timestamp = moment().format('YYYYMMDDHHmmss');
+        const password = Buffer.from(
+          '174379' +process.env.PASS_KEY +timestamp
+        ).toString('base64');
+  
+        axios.post(
+          url,
+          {
+            BusinessShortCode: '174379',
+            Password: password,
+            Timestamp: timestamp,
+            TransactionType: 'CustomerPayBillOnline',
+            Amount: '1',
+            PartyA: '254704847676', 
+            PartyB: '174379',
+            PhoneNumber:  '254704847676', 
+            CallBackURL: process.env.CALLBACK_URL,
+            AccountReference: 'PARKNWASH',
+            TransactionDesc: 'Parking payments',
+          },
+          {
+            headers: {
+              Authorization: auth,
+            },
+          }
+        )
+        .then((response) => {
+          res.send('😀 Request is successful done ✔✔. Please enter mpesa pin to complete the transaction');
+        })
+        .catch((error) => {
+          console.log(error);
+          res.status(500).send('❌ Request failed');
+        });
+      })
+      .catch(console.log);
+  };
+
+
+export{getAccessToken, callbackHandler, accessTokenHandler,stkPushHandler}
 
