@@ -32,12 +32,12 @@ function callbackHandler  (req, res){
   
   const CheckoutRequestID = req.body.Body.stkCallback.CheckoutRequestID;
   const ResultCode = req.body.Body.stkCallback.ResultCode;
-  const callbackMetadata = req.body.Body.stkCallback.CallbackMetadata.Item;
+//   const callbackMetadata = req.body.Body.stkCallback.CallbackMetadata.Item;
 
-  const amount = callbackMetadata.find(item => item.Name === "Amount").Value;
-  const receipt = callbackMetadata.find(item => item.Name === "MpesaReceiptNumber").Value;
-  const transactionDate = callbackMetadata.find(item => item.Name === "TransactionDate").Value;
-  const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
+//   const amount = callbackMetadata.find(item => item.Name === "Amount").Value;
+//   const receipt = callbackMetadata.find(item => item.Name === "MpesaReceiptNumber").Value;
+//   const transactionDate = callbackMetadata.find(item => item.Name === "TransactionDate").Value;
+//   const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
 
   var json = JSON.stringify(req.body);
 
