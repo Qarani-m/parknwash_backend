@@ -42,7 +42,9 @@ function callbackHandler  (req, res){
   var json = JSON.stringify(req.body);
 
   console.log(json)
- 
+ console.log("-------------------------------------")
+
+ console.log(req.body.Body.stkCallback)
 
 //   console.log(`CheckoutRequestID: ${CheckoutRequestID}`);
 //   console.log(`ResultCode: ${ResultCode}`);
