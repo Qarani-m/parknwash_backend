@@ -32,17 +32,22 @@ function callbackHandler  (req, res){
   
   const CheckoutRequestID = req.body.Body.stkCallback.CheckoutRequestID;
   const ResultCode = req.body.Body.stkCallback.ResultCode;
-  
-  var json = JSON.stringify(req.body);
-  
-//   fs.writeFile("stkcallback.json", json, "utf8", function (err) {
-//     if (err) {
-//       return console.log(err);
-//     }
-//     console.log("STK PUSH CALLBACK JSON FILE SAVED");
-//   });
-  
-  console.log(json);
+  const callbackMetadata = req.body.Body.stkCallback.CallbackMetadata.Item;
+
+  const amount = callbackMetadata.find(item => item.Name === "Amount").Value;
+  const receipt = callbackMetadata.find(item => item.Name === "MpesaReceiptNumber").Value;
+  const transactionDate = callbackMetadata.find(item => item.Name === "TransactionDate").Value;
+  const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
+
+ 
+ 
+
+  console.log(`CheckoutRequestID: ${CheckoutRequestID}`);
+  console.log(`ResultCode: ${ResultCode}`);
+  console.log(`Amount: ${amount}`);
+  console.log(`Receipt: ${receipt}`);
+  console.log(`TransactionDate: ${transactionDate}`);
+  console.log(`PhoneNumber: ${phoneNumber}`);
 };
 
  function accessTokenHandler  (req, res){
