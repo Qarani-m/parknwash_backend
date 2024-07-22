@@ -25,6 +25,14 @@ async function callbackHandler(req, res) {
         const receipt = callbackMetadata.find(item => item.Name === "MpesaReceiptNumber").Value;
         const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
         var json = JSON.stringify(req.body);
+        const data = {
+            amount: amount,
+            createdAt: Timestamp.now(),
+            expired: false,
+            referenceId: receipt,
+            bookingId: "paymentIdOmni",
+            uid: "userIdOmni"
+        };
      
 try {
     const docRef = doc(db, "payments", "paymentId");
