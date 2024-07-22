@@ -5,8 +5,8 @@ import {db} from "./firebase-config.js"
 
 import{doc, setDoc, Timestamp} from "firebase/firestore";
 
-let paymentId;
-let userId;
+let paymentIdOmni;
+let userIdOmni;
 
 
 
@@ -29,23 +29,25 @@ async function callbackHandler(req, res) {
             createdAt: Timestamp.now(),
             expired: false,
             referenceId: receipt,
-            bookingId: paymentId,
-            uid: userId
+            bookingId: paymentIdOmni,
+            uid: userIdOmni
         }
-        try {
 
-            const docRef = doc(db, "payments", paymentId);
-            await setDoc(docRef, data);
-            res.json({
-                success: true,
-                message: 'Payment processed successfully',
-                amount,
-                phoneNumber
-            });
-        } catch (error) {
-            console.error('Error adding document:', error);
-            res.status(500).json({ error: 'Could not process payment, please try again' });
-        }
+        console.log(data)
+        // try {
+
+        //     const docRef = doc(db, "payments", paymentId);
+        //     await setDoc(docRef, data);
+        //     res.json({
+        //         success: true,
+        //         message: 'Payment processed successfully',
+        //         amount,
+        //         phoneNumber
+        //     });
+        // } catch (error) {
+        //     console.error('Error adding document:', error);
+        //     res.status(500).json({ error: 'Could not process payment, please try again' });
+        // }
 
 
     } else {
@@ -53,9 +55,7 @@ async function callbackHandler(req, res) {
     }
 };
 
-const processPayment = async () => {
-
-};
+ 
 
 
 function stkPushHandler(req, res) {
@@ -65,8 +65,8 @@ function stkPushHandler(req, res) {
         return res.status(400).json({ error: 'Amount, phone number, and payment ID are required' });
     }
 
-    paymentId = paymentId
-    userId = userId
+    paymentIdOmni = paymentId
+    userIdOmni = userId
 
     getAccessToken()
         .then((accessToken) => {
