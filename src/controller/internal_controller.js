@@ -5,7 +5,7 @@ import { db } from "./firebase-config.js"
 import path from 'path';
 
 
-import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { doc, setDoc, addDoc, Timestamp, collection } from "firebase/firestore";
 import { Console } from "console";
 
 let paymentIdOmni;
@@ -43,8 +43,8 @@ async function callbackHandler(req, res) {
 
 
 
-            const docRef = doc(db, "payments", "paymentId");
-            await setDoc(docRef, data);
+            const docRef = collection(db, "payments", "paymentId");
+            await addDoc(docRef, data);
          console.log("----------------")
         } catch (error) {
             console.error('Error adding document:', error);
