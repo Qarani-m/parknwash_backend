@@ -4,7 +4,6 @@ import { initializeApp } from "firebase/app";
 import dotenv from 'dotenv';
 
 dotenv.config();
-import paymentsRouter from  './src/routes/payment_routes.js'; // Adjust path as necessary
 import internalRouter from  './src/routes/internal_routes.js'; // Adjust path as necessary
 
  
@@ -19,7 +18,6 @@ app.use(urlencoded({ extended: true }));
 
 
 
-app.use('/api', paymentsRouter);  
 app.use("/internal", internalRouter)
 
 app.listen(port, () => {
