@@ -41,7 +41,7 @@ async function callbackHandler(req, res) {
 
         try {
 
-            const docRef = doc(db, "payments", paymentId);
+            const docRef = doc(db, "payments", "paymentId");
             await setDoc(docRef, data);
             res.json({
                 success: true,
