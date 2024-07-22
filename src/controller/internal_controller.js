@@ -9,14 +9,25 @@ import { db } from "./firebase-config.js"
 
  async function callbackHandler(req, res) {
     const ResultCode = req.body.Body.stkCallback.ResultCode;
+    const checkoutRequestID =  req.body.Body.stkCallback.CheckoutRequestID;
+
  
 
     if (ResultCode == 2001) {
-        message = 'The initiator information is invalid.';
+        // message = 'The initiator information is invalid.';
+        console.log( JSON.stringify(req.body))
+        const data = {
+            status:"failed"
+        };
+        await saveToFireStoreB(checkoutRequestID,data )
     } else if (ResultCode == 1032) {
-        message = 'Request cancelled by user';
+        // message = 'Request cancelled by user';
+        console.log( JSON.stringify(req.body))
+        const data = {
+            status:"failed"
+        };
+        await saveToFireStoreB(checkoutRequestID,data )
     } else if (ResultCode == 0) {
-        const checkoutRequestID =  req.body.Body.stkCallback.CheckoutRequestID;
 
         const callbackMetadata = req.body.Body.stkCallback.CallbackMetadata.Item;
         const amount = callbackMetadata.find(item => item.Name === "Amount").Value;
@@ -30,11 +41,16 @@ import { db } from "./firebase-config.js"
             expired: false,
             referenceId: receipt,
             phone: phoneNumber,
+            status:"completed"
         };
         await saveToFireStoreB(checkoutRequestID,data )
-
- 
-    } 
+    }else{
+        console.log( JSON.stringify(req.body))
+        const data = {
+            status:"failed"
+        };
+        await saveToFireStoreB(checkoutRequestID,data )
+    }
 }
 
 async function saveToFireStoreB(paymentId, data) {
