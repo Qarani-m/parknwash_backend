@@ -1,11 +1,11 @@
 import axios from "axios";
 import fs from "fs";
 import moment from 'moment';
-import {db} from "./firebase-config.js"
-import  path  from 'path';
+import { db } from "./firebase-config.js"
+import path from 'path';
 
 
-import{doc, setDoc, Timestamp} from "firebase/firestore";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { Console } from "console";
 
 let paymentIdOmni;
@@ -28,35 +28,31 @@ async function callbackHandler(req, res) {
 
         var json = JSON.stringify(req.body);
 
-        console.log(json)
-        console.log("-------------------------------")
-        console.log(req.body.Body.stkCallback)
 
 
-        // const data =
-        // {
-        //     amount: amount,
-        //     createdAt: Timestamp.now(),
-        //     expired: false,
-        //     referenceId: receipt,
-        //     bookingId: paymentIdOmni,
-        //     uid: userIdOmni
-        // }
+        const data ={
+            amount: amount,
+            createdAt: Timestamp.now(),
+            expired: false,
+            referenceId: receipt,
+            bookingId: "paymentIdOmni",
+            uid: "userIdOmni"
+        }
 
-  // try {
+        try {
 
-        //     const docRef = doc(db, "payments", paymentId);
-        //     await setDoc(docRef, data);
-        //     res.json({
-        //         success: true,
-        //         message: 'Payment processed successfully',
-        //         amount,
-        //         phoneNumber
-        //     });
-        // } catch (error) {
-        //     console.error('Error adding document:', error);
-        //     res.status(500).json({ error: 'Could not process payment, please try again' });
-        // }
+            const docRef = doc(db, "payments", paymentId);
+            await setDoc(docRef, data);
+            res.json({
+                success: true,
+                message: 'Payment processed successfully',
+                amount,
+                phoneNumber
+            });
+        } catch (error) {
+            console.error('Error adding document:', error);
+            res.status(500).json({ error: 'Could not process payment, please try again' });
+        }
 
 
     } else {
@@ -64,7 +60,7 @@ async function callbackHandler(req, res) {
     }
 };
 
- 
+
 
 
 function stkPushHandler(req, res) {
@@ -73,7 +69,7 @@ function stkPushHandler(req, res) {
     if (!amount || !phoneNumber || !paymentId || !userId) {
         return res.status(400).json({ error: 'Amount, phone number, and payment ID are required' });
     }
-  
+
 
     getAccessToken()
         .then((accessToken) => {
