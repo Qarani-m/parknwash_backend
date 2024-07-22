@@ -8,7 +8,7 @@ router.post('/stkpush', stkPushHandler);
   
 
 router.get("/",(req, res)=>{
-    resizeBy.send("====>")
+    res.send("====>")
 })
 
 export default router; 
