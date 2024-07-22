@@ -26,7 +26,9 @@ async function callbackHandler(req, res) {
         const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
 
 
-        console.log(req.body.Body)
+        var json = JSON.stringify(req.body);
+
+        console.log(json)
         console.log("-------------------------------")
         console.log(req.body.Body.stkCallback)
 
@@ -41,8 +43,7 @@ async function callbackHandler(req, res) {
         //     uid: userIdOmni
         // }
 
-        // console.log(data)
-        // try {
+  // try {
 
         //     const docRef = doc(db, "payments", paymentId);
         //     await setDoc(docRef, data);
