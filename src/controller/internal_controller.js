@@ -4,6 +4,9 @@ import moment from 'moment';
 import { db } from "./firebase-config.js"
  import { doc, setDoc, getDoc, Timestamp } from "firebase/firestore";
 
+//  console.log( JSON.stringify(req.body))
+ 
+
  async function callbackHandler(req, res) {
     const ResultCode = req.body.Body.stkCallback.ResultCode;
  
@@ -13,28 +16,41 @@ import { db } from "./firebase-config.js"
     } else if (ResultCode == 1032) {
         message = 'Request cancelled by user';
     } else if (ResultCode == 0) {
+        const checkoutRequestID = responseObject.Body.stkCallback.CheckoutRequestID;
+
         const callbackMetadata = req.body.Body.stkCallback.CallbackMetadata.Item;
         const amount = callbackMetadata.find(item => item.Name === "Amount").Value;
         const receipt = callbackMetadata.find(item => item.Name === "MpesaReceiptNumber").Value;
         const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
 
          
-        // const data = {
-        //     amount: amount,
-        //     createdAt: Timestamp.now(),
-        //     expired: false,
-        //     referenceId: receipt,
-        //     phone: phoneNumber,
-        //     bookingId: "paymentIdOmni",
-        //     uid: "userIdOmni"
-        // };
+        const data = {
+            amount: amount,
+            createdAt: Timestamp.now(),
+            expired: false,
+            referenceId: receipt,
+            phone: phoneNumber,
+        };
+        await saveToFireStoreB(checkoutRequestID,data )
 
-        console.log( JSON.stringify(req.body))
  
-    }
-    res.status(200).end();
+    } 
 }
 
+async function saveToFireStoreB(paymentId, data) {
+    console.log(paymentId)
+    const collectionName = "payments";
+    try {
+        const paymentRef = db.collection(collectionName).doc(paymentId);
+        await paymentRef.set(data, { merge: true });
+        console.log('Document successfully updated');
+    } catch (error) {
+        console.error('Error adding document:', error);
+        if (res) {
+            res.status(500).json({ error: 'Could not process payment, please try again' });
+        }
+    }
+}
 
 
 
@@ -49,9 +65,7 @@ async function saveToFireStoreA(paymentId, userId,CheckoutRequestID ) {
         console.log("Document written with ID: ", docRef.id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
         } else {
-            console.log("No such document!");
         }
     } catch (error) {
         console.error('Error adding document:', error);
