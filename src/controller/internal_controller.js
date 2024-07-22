@@ -38,17 +38,16 @@ import { db } from "./firebase-config.js"
 }
 
 async function saveToFireStoreB(paymentId, data) {
-    console.log(paymentId)
+    console.log(paymentId);
     const collectionName = "payments";
     try {
-        const paymentRef = db.collection(collectionName).doc(paymentId);
-        await paymentRef.set(data, { merge: true });
+        const paymentRef = doc(db, collectionName, paymentId);
+        await setDoc(paymentRef, data, { merge: true });
         console.log('Document successfully updated');
     } catch (error) {
         console.error('Error adding document:', error);
-        if (res) {
-            res.status(500).json({ error: 'Could not process payment, please try again' });
-        }
+ 
+        throw error;  
     }
 }
 
