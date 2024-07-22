@@ -25,7 +25,8 @@ async function callbackHandler(req, res) {
         const receipt = callbackMetadata.find(item => item.Name === "MpesaReceiptNumber").Value;
         const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
 
-        console.log(callbackMetadata)
+
+        console.log(req.body.Body.stkCallback.CallbackMetadata)
 
 
         // const data =
