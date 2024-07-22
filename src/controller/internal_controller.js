@@ -5,7 +5,7 @@ import { db } from "./firebase-config.js"
 import path from 'path';
 
 
-import { doc, setDoc, addDoc, Timestamp, collection } from "firebase/firestore";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 import { Console } from "console";
 
 let paymentIdOmni;
@@ -24,37 +24,26 @@ async function callbackHandler(req, res) {
         const amount = callbackMetadata.find(item => item.Name === "Amount").Value;
         const receipt = callbackMetadata.find(item => item.Name === "MpesaReceiptNumber").Value;
         const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
-
-
         var json = JSON.stringify(req.body);
-
-
-
-        const data ={
-            amount: amount,
-            createdAt: Timestamp.now(),
-            expired: false,
-            referenceId: receipt,
-            bookingId: "paymentIdOmni",
-            uid: "userIdOmni"
-        }
-
-        try {
-
-
-
-            const docRef = collection(db, "payments", "paymentId");
-            await addDoc(docRef, data);
-         console.log("----------------")
-        } catch (error) {
-            console.error('Error adding document:', error);
-            res.status(500).json({ error: 'Could not process payment, please try again' });
-        }
-
-
+     
+try {
+    const docRef = doc(db, "payments", "paymentId");
+    await setDoc(docRef, data);
+    console.log("Document written with ID: ", docRef.id);
+    // Consider adding a check here to verify the document was added
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
     } else {
-
+        console.log("No such document!");
     }
+} catch (error) {
+    console.error('Error adding document:', error);
+    // Make sure this error handling is appropriate for your application structure
+    if (res) {
+        res.status(500).json({ error: 'Could not process payment, please try again' });
+    }
+}}
 };
 
 
