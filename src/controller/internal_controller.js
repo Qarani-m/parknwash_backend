@@ -27,6 +27,8 @@ async function callbackHandler(req, res) {
 
 
         console.log(req.body.Body.stkCallback.CallbackMetadata)
+        console.log("-------------------------------")
+        console.log(req.body.Body.stkCallback)
 
 
         // const data =
