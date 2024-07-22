@@ -5,7 +5,7 @@ import { db } from "./firebase-config.js"
 import path from 'path';
 
 
-import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, Timestamp } from "firebase/firestore";
 import { Console } from "console";
 
 let paymentIdOmni;
