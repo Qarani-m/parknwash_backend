@@ -25,36 +25,45 @@ async function callbackHandler(req, res) {
         const receipt = callbackMetadata.find(item => item.Name === "MpesaReceiptNumber").Value;
         const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
         var json = JSON.stringify(req.body);
-        const data = {
-            amount: amount,
-            createdAt: Timestamp.now(),
-            expired: false,
-            referenceId: receipt,
-            bookingId: "paymentIdOmni",
-            uid: "userIdOmni"
-        };
-     
-        console.log(data)
-try {
-    const docRef = doc(db, "payments", "paymentId");
-    await setDoc(docRef, data);
-    console.log("Document written with ID: ", docRef.id);
-    // Consider adding a check here to verify the document was added
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
-    } else {
-        console.log("No such document!");
-    }
-} catch (error) {
-    console.error('Error adding document:', error);
-    // Make sure this error handling is appropriate for your application structure
-    if (res) {
-        res.status(500).json({ error: 'Could not process payment, please try again' });
-    }
-}}
+
+        await test(amount, phoneNumber, receipt);
+      }
 };
 
+
+
+async function test(amount, phoneNumber, receipt){
+    const data = {
+        amount: amount,
+        createdAt: Timestamp.now(),
+        expired: false,
+        referenceId: receipt,
+        phone:phoneNumber,
+        bookingId: "paymentIdOmni",
+        uid: "userIdOmni"
+    };
+ 
+ 
+try {
+const docRef = doc(db, "payments", "paymentId");
+await setDoc(docRef, data);
+console.log("Document written with ID: ", docRef.id);
+// Consider adding a check here to verify the document was added
+const docSnap = await getDoc(docRef);
+if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+} else {
+    console.log("No such document!");
+}
+} catch (error) {
+console.error('Error adding document:', error);
+// Make sure this error handling is appropriate for your application structure
+if (res) {
+    res.status(500).json({ error: 'Could not process payment, please try again' });
+}
+}
+
+}
 
 
 
