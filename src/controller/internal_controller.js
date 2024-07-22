@@ -42,15 +42,10 @@ async function callbackHandler(req, res) {
         try {
 
 
-            
+
             const docRef = doc(db, "payments", "paymentId");
             await setDoc(docRef, data);
-            res.json({
-                success: true,
-                message: 'Payment processed successfully',
-                amount,
-                phoneNumber
-            });
+         console.log("----------------")
         } catch (error) {
             console.error('Error adding document:', error);
             res.status(500).json({ error: 'Could not process payment, please try again' });
@@ -75,50 +70,50 @@ async function stkPushHandler(req, res) {
 
 
 
-    // if (!amount || !phoneNumber || !paymentId || !userId) {
-    //     return res.status(400).json({ error: 'Amount, phone number, and payment ID are required' });
-    // }
+    if (!amount || !phoneNumber || !paymentId || !userId) {
+        return res.status(400).json({ error: 'Amount, phone number, and payment ID are required' });
+    }
 
 
-    // getAccessToken()
-    //     .then((accessToken) => {
-    //         const url = process.env.SANDBOX_REQUEST_URL;
-    //         const auth = 'Bearer ' + accessToken;
-    //         const timestamp = moment().format('YYYYMMDDHHmmss');
-    //         const password = Buffer.from(
-    //             '174379' + process.env.PASS_KEY + timestamp
-    //         ).toString('base64');
+    getAccessToken()
+        .then((accessToken) => {
+            const url = process.env.SANDBOX_REQUEST_URL;
+            const auth = 'Bearer ' + accessToken;
+            const timestamp = moment().format('YYYYMMDDHHmmss');
+            const password = Buffer.from(
+                '174379' + process.env.PASS_KEY + timestamp
+            ).toString('base64');
 
-    //         axios.post(
-    //             url,
-    //             {
-    //                 BusinessShortCode: '174379',
-    //                 Password: password,
-    //                 Timestamp: timestamp,
-    //                 TransactionType: 'CustomerPayBillOnline',
-    //                 Amount: amount,
-    //                 PartyA: phoneNumber,
-    //                 PartyB: '174379',
-    //                 PhoneNumber: phoneNumber,
-    //                 CallBackURL: process.env.CALLBACK_URL,
-    //                 AccountReference: "DOTTY_LITTLEONE",
-    //                 TransactionDesc: ` ${userId}:${paymentId}`,
-    //             },
-    //             {
-    //                 headers: {
-    //                     Authorization: auth,
-    //                 },
-    //             }
-    //         )
-    //             .then((response) => {
-    //                 res.send('😀 Request is successful done ✔✔. Please enter mpesa pin to complete the transaction');
-    //             })
-    //             .catch((error) => {
-    //                 console.log(error);
-    //                 res.status(500).send('❌ Request failed❌');
-    //             });
-    //     })
-    //     .catch(console.log);
+            axios.post(
+                url,
+                {
+                    BusinessShortCode: '174379',
+                    Password: password,
+                    Timestamp: timestamp,
+                    TransactionType: 'CustomerPayBillOnline',
+                    Amount: amount,
+                    PartyA: phoneNumber,
+                    PartyB: '174379',
+                    PhoneNumber: phoneNumber,
+                    CallBackURL: process.env.CALLBACK_URL,
+                    AccountReference: "DOTTY_LITTLEONE",
+                    TransactionDesc: ` ${userId}:${paymentId}`,
+                },
+                {
+                    headers: {
+                        Authorization: auth,
+                    },
+                }
+            )
+                .then((response) => {
+                    res.send('😀 Request is successful done ✔✔. Please enter mpesa pin to complete the transaction');
+                })
+                .catch((error) => {
+                    console.log(error);
+                    res.status(500).send('❌ Request failed❌');
+                });
+        })
+        .catch(console.log);
 
 };
 
