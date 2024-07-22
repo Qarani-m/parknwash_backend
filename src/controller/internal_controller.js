@@ -18,9 +18,18 @@ import { db } from "./firebase-config.js"
         const receipt = callbackMetadata.find(item => item.Name === "MpesaReceiptNumber").Value;
         const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
 
-        await test(amount, phoneNumber, receipt);
+         
+        // const data = {
+        //     amount: amount,
+        //     createdAt: Timestamp.now(),
+        //     expired: false,
+        //     referenceId: receipt,
+        //     phone: phoneNumber,
+        //     bookingId: "paymentIdOmni",
+        //     uid: "userIdOmni"
+        // };
 
-        console.log(req.body.Body.stkCallback.CallbackMetadata)
+        console.log( JSON.stringify(req.body))
  
     }
     res.status(200).end();
@@ -29,21 +38,15 @@ import { db } from "./firebase-config.js"
 
 
 
-async function test(amount, phoneNumber, receipt) {
+async function saveToFireStoreA(paymentId, userId,CheckoutRequestID ) {
     const data = {
-        amount: amount,
-        createdAt: Timestamp.now(),
-        expired: false,
-        referenceId: receipt,
-        phone: phoneNumber,
-        bookingId: "paymentIdOmni",
-        uid: "userIdOmni"
+        bookingId:paymentId,
+        uid: userId
     };
     try {
-        const docRef = doc(db, "payments", "paymentId1");
+        const docRef = doc(db, "payments", CheckoutRequestID);
         await setDoc(docRef, data);
         console.log("Document written with ID: ", docRef.id);
-        // Consider adding a check here to verify the document was added
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             console.log("Document data:", docSnap.data());
@@ -63,12 +66,12 @@ async function stkPushHandler(req, res) {
 
 
 
-    const { amount, phoneNumber, paymentId, userId } = req.body;
-    if (!amount || !phoneNumber || !paymentId || !userId) {
+    const { amount, phoneNumber, bookingData, userId } = req.body;
+    if (!amount || !phoneNumber || !bookingData || !userId) {
         return res.status(400).json({ error: 'Amount, phone number, and payment ID are required' });
     }
 
-    console.log(amount, paymentId, phoneNumber,userId)
+ 
     getAccessToken()
         .then((accessToken) => {
             const url = process.env.SANDBOX_REQUEST_URL;
@@ -91,7 +94,7 @@ async function stkPushHandler(req, res) {
                     PhoneNumber: phoneNumber,
                     CallBackURL: process.env.CALLBACK_URL,
                     AccountReference: "DOTTY_LITTLEONE",
-                    TransactionDesc: ` ${userId}:${paymentId}`,
+                    TransactionDesc: ` ${userId}:${bookingData}`,
                 },
                 {
                     headers: {
@@ -99,14 +102,16 @@ async function stkPushHandler(req, res) {
                     },
                 }
             )
-            .then((response) => {
+            .then(async (response) => {
 
                 console.log(response.data)
                 if(response.data.ResponseCode=="0"){
-
+                    await saveToFireStoreA(bookingData,userId, response.data.CheckoutRequestID)
                 }
                 res.status(200).json({
-                    message: "We're processing your payment. Please enter your M-Pesa PIN to complete the transaction."
+                    message: "We're processing your payment. Please enter your M-Pesa PIN to complete the transaction.", 
+                    "paymendId":response.data.CheckoutRequestID
+                     
                 });
             })
                 .catch((error) => {
