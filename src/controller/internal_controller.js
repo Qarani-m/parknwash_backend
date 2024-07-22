@@ -2,8 +2,11 @@ import axios from "axios";
 import fs from "fs";
 import moment from 'moment';
 import {db} from "./firebase-config.js"
+import  path  from 'path';
+
 
 import{doc, setDoc, Timestamp} from "firebase/firestore";
+import { Console } from "console";
 
 let paymentIdOmni;
 let userIdOmni;
@@ -22,18 +25,20 @@ async function callbackHandler(req, res) {
         const receipt = callbackMetadata.find(item => item.Name === "MpesaReceiptNumber").Value;
         const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
 
+        console.log(callbackMetadata)
 
-        const data =
-        {
-            amount: amount,
-            createdAt: Timestamp.now(),
-            expired: false,
-            referenceId: receipt,
-            bookingId: paymentIdOmni,
-            uid: userIdOmni
-        }
 
-        console.log(data)
+        // const data =
+        // {
+        //     amount: amount,
+        //     createdAt: Timestamp.now(),
+        //     expired: false,
+        //     referenceId: receipt,
+        //     bookingId: paymentIdOmni,
+        //     uid: userIdOmni
+        // }
+
+        // console.log(data)
         // try {
 
         //     const docRef = doc(db, "payments", paymentId);
@@ -64,9 +69,7 @@ function stkPushHandler(req, res) {
     if (!amount || !phoneNumber || !paymentId || !userId) {
         return res.status(400).json({ error: 'Amount, phone number, and payment ID are required' });
     }
-
-    paymentIdOmni = paymentId
-    userIdOmni = userId
+  
 
     getAccessToken()
         .then((accessToken) => {
@@ -89,8 +92,8 @@ function stkPushHandler(req, res) {
                     PartyB: '174379',
                     PhoneNumber: phoneNumber,
                     CallBackURL: process.env.CALLBACK_URL,
-                    AccountReference: 'PARKNWASH',
-                    TransactionDesc: 'Parking payments',
+                    AccountReference: "DOTTY_LITTLEONE",
+                    TransactionDesc: ` ${userId}:${paymentId}`,
                 },
                 {
                     headers: {
