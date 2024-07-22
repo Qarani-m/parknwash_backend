@@ -23,7 +23,7 @@ import { db } from "./firebase-config.js"
         const receipt = callbackMetadata.find(item => item.Name === "MpesaReceiptNumber").Value;
         const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
 
-         
+        console.log( JSON.stringify(req.body))
         const data = {
             amount: amount,
             createdAt: Timestamp.now(),
@@ -122,7 +122,7 @@ async function stkPushHandler(req, res) {
                     await saveToFireStoreA(bookingData,userId, response.data.CheckoutRequestID)
                 }
                 res.status(200).json({
-                    message: "We're processing your payment. Please enter your M-Pesa PIN to complete the transaction.", 
+                    message: "Please wait while we process your payment", 
                     "paymendId":response.data.CheckoutRequestID
                      
                 });

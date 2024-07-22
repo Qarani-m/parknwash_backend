@@ -7,6 +7,10 @@ router.post('/callback', callbackHandler);
 router.post('/stkpush', stkPushHandler);
   
 
+router.get("/",(req, res)=>{
+    resizeBy.send("====>")
+})
+
 export default router; 
 
 
