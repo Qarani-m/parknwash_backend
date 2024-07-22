@@ -26,7 +26,7 @@ async function callbackHandler(req, res) {
         const phoneNumber = callbackMetadata.find(item => item.Name === "PhoneNumber").Value;
 
 
-        console.log(req.body.Body.stkCallback.CallbackMetadata)
+        console.log(req.body.Body)
         console.log("-------------------------------")
         console.log(req.body.Body.stkCallback)
 
