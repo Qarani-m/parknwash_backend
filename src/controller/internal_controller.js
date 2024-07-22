@@ -34,6 +34,7 @@ async function callbackHandler(req, res) {
             uid: "userIdOmni"
         };
      
+        console.log(data)
 try {
     const docRef = doc(db, "payments", "paymentId");
     await setDoc(docRef, data);
