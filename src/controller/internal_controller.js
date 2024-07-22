@@ -16,7 +16,7 @@ import { db } from "./firebase-config.js"
     } else if (ResultCode == 1032) {
         message = 'Request cancelled by user';
     } else if (ResultCode == 0) {
-        const checkoutRequestID = responseObject.Body.stkCallback.CheckoutRequestID;
+        const checkoutRequestID =  req.body.Body.stkCallback.CheckoutRequestID;
 
         const callbackMetadata = req.body.Body.stkCallback.CallbackMetadata.Item;
         const amount = callbackMetadata.find(item => item.Name === "Amount").Value;
