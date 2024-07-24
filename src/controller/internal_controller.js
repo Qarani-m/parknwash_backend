@@ -12,22 +12,30 @@ import { db } from "./firebase-config.js"
     const checkoutRequestID =  req.body.Body.stkCallback.CheckoutRequestID;
 
  
+    console.log("-----------------------000000000------------------->")
 
     if (ResultCode == 2001) {
         // message = 'The initiator information is invalid.';
+        console.log("===========================>")
         console.log( JSON.stringify(req.body))
         const data = {
             status:"failed"
         };
         await saveToFireStoreB(checkoutRequestID,data )
+        res.send("acknoledged")
+
     } else if (ResultCode == 1032) {
+        console.log("------------------------------------------>")
         // message = 'Request cancelled by user';
         console.log( JSON.stringify(req.body))
         const data = {
             status:"failed"
         };
         await saveToFireStoreB(checkoutRequestID,data )
+        res.send("acknoledged")
+
     } else if (ResultCode == 0) {
+        console.log("***********************************************")
 
         const callbackMetadata = req.body.Body.stkCallback.CallbackMetadata.Item;
         const amount = callbackMetadata.find(item => item.Name === "Amount").Value;
@@ -44,14 +52,31 @@ import { db } from "./firebase-config.js"
             status:"completed"
         };
         await saveToFireStoreB(checkoutRequestID,data )
+
+        res.send("acknoledged")
     }else{
+        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         console.log( JSON.stringify(req.body))
         const data = {
             status:"failed"
         };
         await saveToFireStoreB(checkoutRequestID,data )
+        res.send("acknoledged")
+
     }
+
+
+    
 }
+
+
+
+
+
+
+
+
+
 
 async function saveToFireStoreB(paymentId, data) {
     console.log(paymentId);
@@ -72,7 +97,8 @@ async function saveToFireStoreB(paymentId, data) {
 async function saveToFireStoreA(paymentId, userId,CheckoutRequestID ) {
     const data = {
         bookingId:paymentId,
-        uid: userId
+        uid: userId,
+        status:"incomplete"
     };
     try {
         const docRef = doc(db, "payments", CheckoutRequestID);
@@ -97,6 +123,7 @@ async function stkPushHandler(req, res) {
 
     const { amount, phoneNumber, bookingData, userId } = req.body;
     if (!amount || !phoneNumber || !bookingData || !userId) {
+        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
         return res.status(400).json({ error: 'Amount, phone number, and payment ID are required' });
     }
 
